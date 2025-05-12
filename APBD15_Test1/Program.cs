@@ -9,6 +9,9 @@ builder.Services.AddControllers();
 // Adding scoped services eg. : builder.Services.AddScoped<IDbService, DbService>(); 
 builder.Services.AddScoped<IAppointmentsService, AppointmentsService>();
 builder.Services.AddScoped<IAppointmentsRepository, AppointmentsRepository>();
+builder.Services.AddScoped<IDoctorsRepository, DoctorsRepository>();
+builder.Services.AddScoped<IPatientsRepository, PatientsRepository>();
+builder.Services.AddScoped<IServicesRepository, ServicesRepository>();
 
 
 

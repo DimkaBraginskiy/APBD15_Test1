@@ -16,14 +16,14 @@ public class AppointmentsRepository : IAppointmentsRepository
 
     public async Task<bool> ExistsAppointmentAsync(CancellationToken token, int id)
     {
-        string sql = @"select * from Appointment WHERE appoitment_id = @Id";
+        string sql = @"SELECT 1 FROM Appointment WHERE appoitment_id = @AppointmentId";
 
         await using (var connection = new SqlConnection(_connectionString))
         await using (var command = new SqlCommand(sql, connection))
         {
             await connection.OpenAsync(token);
 
-            command.Parameters.AddWithValue("@Id", id);
+            command.Parameters.AddWithValue("@AppointmentId", id);
 
             var result = command.ExecuteReaderAsync(token);
 
@@ -38,7 +38,7 @@ public class AppointmentsRepository : IAppointmentsRepository
             a.date,
          a.patient_id,
          a.doctor_id,
-         d.PWZ,
+         d.Pwz,
            p.first_name,
            p.last_name,
            p.date_of_birth,
@@ -108,9 +108,9 @@ public class AppointmentsRepository : IAppointmentsRepository
 
         try
         {
-            
+            // inserting into appointment:
             const string insertAppointmentSql = @"
-            INSERT INTO appointment (appointment_id, patient_id, doctor_id, date)
+            INSERT INTO appointment (appoitment_id, patient_id, doctor_id, date)
             VALUES (@appointment_id, @patient_id, @doctor_id, @date)";
 
             using var insertAppointmentCmd = new SqlCommand(insertAppointmentSql, conn, (SqlTransaction)transaction);

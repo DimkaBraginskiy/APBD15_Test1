@@ -10,15 +10,18 @@ public class AppointmentsService : IAppointmentsService
    private readonly IAppointmentsRepository _appointmentsRepository;
    private readonly IPatientsRepository _patientsRepository;
    private readonly IDoctorsRepository _doctorsRepository;
+   private readonly IServicesRepository _servicesRepository;
 
     public AppointmentsService (
         IAppointmentsRepository appointmentsRepository,
         IPatientsRepository patientsRepository,
-        IDoctorsRepository doctorsRepository)
+        IDoctorsRepository doctorsRepository,
+        IServicesRepository servicesRepository)
     {
         _appointmentsRepository = appointmentsRepository;
         _patientsRepository = patientsRepository;
         _doctorsRepository = doctorsRepository;
+        _servicesRepository = servicesRepository;
     }
     
     public async Task<AppointmentResponseDto?> GetAppointmentByIdAsync(CancellationToken token, int id)
@@ -35,12 +38,12 @@ public class AppointmentsService : IAppointmentsService
     public async Task<int> CreateAppointmentAsync(CancellationToken token, AppointmentRequestDto dto)
     {
         //Validating all the passed data:
-        if (await _appointmentsRepository.ExistsAppointmentAsync(token, dto.AppointmentId))
+        if (await _appointmentsRepository.ExistsAppointmentAsync(token, dto.AppointmentId) == false)
         {
             throw new ConflictException($"Appointment with id {dto.AppointmentId} already exists.");
         }
         
-        if (await _patientsRepository.ExistsPatientAsync(token, dto.PatientId))
+        if (await _patientsRepository.ExistsPatientAsync(token, dto.PatientId) == false)
         {
             throw new ConflictException($"Patient with id {dto.PatientId} already exists.");
         }
@@ -52,16 +55,17 @@ public class AppointmentsService : IAppointmentsService
         }
         
         //going through services....
-        /*foreach (var serviceRequestDto in dto.Services)
+        foreach (var serviceRequestDto in dto.Services)
         {
             var service = await _servicesRepository.ServiceExistsByNameAsync(token, serviceRequestDto.Name);
             if (service == null)
             {
                 throw new NotFoundException($"Service with Name {serviceRequestDto.Name} not found.");
             }
-        }*/
-
-        var result = await _appointmentsRepository.CreateAppointmentAsync(token, dto, doctor.DoctorId);
+        }
+        
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!! DOCTOR ID
+        var result = await _appointmentsRepository.CreateAppointmentAsync(token, dto, doctor.DoctorId); 
 
         return result;
     }

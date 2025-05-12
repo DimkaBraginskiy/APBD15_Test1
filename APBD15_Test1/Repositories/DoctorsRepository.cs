@@ -31,7 +31,8 @@ public class DoctorsRepository : IDoctorsRepository
 
     public async Task<DoctorResponseDto> GetDoctorByPwzAsync(CancellationToken token, string pwz)
     {
-        string sql = @"select * from Doctor WHERE pwz = @Pwz";
+        string sql = @"select doctor_id, pwz FROM Doctor 
+                        WHERE pwz = @pwz";
         
         DoctorResponseDto? doctor = null;
         
@@ -40,7 +41,7 @@ public class DoctorsRepository : IDoctorsRepository
         {
             await connection.OpenAsync(token);
 
-            command.Parameters.AddWithValue("@Id", pwz);
+            command.Parameters.AddWithValue("@pwz", pwz);
 
             var reader = await command.ExecuteReaderAsync(token);
 

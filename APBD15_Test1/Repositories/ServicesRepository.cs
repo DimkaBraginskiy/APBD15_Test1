@@ -2,30 +2,30 @@
 
 namespace APBD15_Test1.Repositories;
 
-public class PatientsesRepository : IPatientsRepository
+public class ServicesRepository : IServicesRepository
 {
     
     private readonly string _connectionString;
 
-    public PatientsesRepository(IConfiguration configuration)
+    public ServicesRepository(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
     
-    public async Task<bool> ExistsPatientAsync(CancellationToken token, int id)
+    public async Task<bool> ServiceExistsByNameAsync(CancellationToken token, string name)
     {
-        string sql = @"select * from Patient WHERE patient_id = @Id";
+        string sql = @"SELECT 1 FROM Service WHERE name = @Name";
 
         await using (var connection = new SqlConnection(_connectionString))
         await using (var command = new SqlCommand(sql, connection))
         {
             await connection.OpenAsync(token);
 
-            command.Parameters.AddWithValue("@Id", id);
+            command.Parameters.AddWithValue("@Name", name);
 
             var result = command.ExecuteReaderAsync(token);
 
             return result != null;
-        }
+        }   
     }
 }
