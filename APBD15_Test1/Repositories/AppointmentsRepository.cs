@@ -16,7 +16,7 @@ public class AppointmentsRepository : IAppointmentsRepository
 
     public async Task<bool> ExistsAppointmentAsync(CancellationToken token, int id)
     {
-        string sql = @"SELECT 1 FROM Appointment WHERE appoitment_id = @AppointmentId";
+        string sql = @"SELECT 1 FROM Appointment WHERE appointment_id = @AppointmentId";
 
         await using (var connection = new SqlConnection(_connectionString))
         await using (var command = new SqlCommand(sql, connection))
@@ -48,9 +48,9 @@ public class AppointmentsRepository : IAppointmentsRepository
         FROM Appointment a
          JOIN Doctor d ON a.doctor_id = d.doctor_id
          JOIN Patient p ON a.patient_id = p.patient_id
-         JOIN Appointment_Service aser ON a.appoitment_id = aser.appoitment_id
+         JOIN Appointment_Service aser ON a.appointment_id = aser.appointment_id
          JOIN Service s ON aser.service_id = s.service_id
-        WHERE a.appoitment_id = @Id
+        WHERE a.appointment_id = @Id
         ORDER BY a.doctor_id";
 
 
@@ -110,7 +110,7 @@ public class AppointmentsRepository : IAppointmentsRepository
         {
             // inserting into appointment:
             const string insertAppointmentSql = @"
-            INSERT INTO appointment (appoitment_id, patient_id, doctor_id, date)
+            INSERT INTO appointment (appointment_id, patient_id, doctor_id, date)
             VALUES (@appointment_id, @patient_id, @doctor_id, @date)";
 
             using var insertAppointmentCmd = new SqlCommand(insertAppointmentSql, conn, (SqlTransaction)transaction);
@@ -140,7 +140,7 @@ public class AppointmentsRepository : IAppointmentsRepository
                 serviceId = Convert.ToInt32(serviceIdObj);
 
                 const string insertAppointmentServiceSql = @"
-                    INSERT INTO appointment_service (appointment_id, service_id, service_fee)
+                    INSERT INTO appointment_service (n_id, service_id, service_fee)
                     VALUES (@appointment_id, @service_id, @service_fee);";
 
                 using var insertServiceCmd = new SqlCommand(insertAppointmentServiceSql, conn, (SqlTransaction)transaction);
